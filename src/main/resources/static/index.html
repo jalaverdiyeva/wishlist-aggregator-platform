@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wishlist Board</title>
+    <!-- Import Griffy, Doto, Lavishly Yours, and Reenie Beanie -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Doto:wght@400;700;800&family=Griffy&family=Lavishly+Yours&family=Reenie+Beanie&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          background: #f7f7f7;
+          margin: 0;
+          padding: 0 0 20px 0;
+        }
+        .announcement-bar {
+          position: sticky;
+          top: 0;
+          left: 0;
+          z-index: 1000;
+          width: 100%;
+          background-color: #111;
+          color: #fff;
+          text-align: center;
+          padding: 10px 16px;
+          font-size: 12px;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          font-family: 'Doto', sans-serif !important;
+          margin-bottom: 20px;
+        }
+        .announcement-bar span {
+          transition: opacity 0.4s ease-in-out;
+          display: inline-block;
+        }
+        .announcement-bar span.fade-out { opacity: 0; }
+
+        /* PROFILE WIDGET STYLING FOR HEADER ALIGNMENT */
+        .profile-widget {
+          position: absolute;
+          left: 0;
+          z-index: 1001;
+        }
+        .apple-btn {
+          width: 46px;
+          height: 46px;
+          background: none;
+          border: none;
+          padding: 0;
+          cursor: pointer;
+          outline: none;
+          transition: transform 0.2s ease, filter 0.2s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .apple-btn:hover {
+          transform: scale(1.1);
+          filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+        }
+        .apple-btn img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+          border-radius: 50%;
+        }
+        .profile-dropdown {
+          display: none;
+          position: absolute;
+          top: 55px;
+          left: 0;
+          background: #ffffff;
+          padding: 16px;
+          border-radius: 16px;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+          width: 240px;
+          border: 1px solid #eaeaea;
+          animation: fadeIn 0.2s ease-out forwards;
+        }
+        .profile-dropdown.show { display: block; }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(-8px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .user-profile-card {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          gap: 6px;
+        }
+        .user-avatar {
+          width: 52px;
+          height: 52px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 2px solid #e60023;
+        }
+        .user-name {
+          font-size: 15px;
+          font-weight: 700;
+          color: #222;
+          margin-top: 4px;
+        }
+        .user-handle {
+          font-size: 13px;
+          font-weight: 600;
+          color: #e60023;
+        }
+        .user-email {
+          font-size: 12px;
+          color: #666;
+          word-break: break-all;
+          margin-bottom: 8px;
+        }
+        .nav-link-btn {
+          width: 100%;
+          background: #111;
+          color: #fff;
+          border: none;
+          padding: 8px 14px;
+          border-radius: 8px;
+          font-size: 12px;
+          font-weight: 600;
+          cursor: pointer;
+          text-decoration: none;
+          text-align: center;
+          transition: background 0.2s ease;
+          display: block;
+          margin-bottom: 6px;
+        }
+        .nav-link-btn:hover { background: #e60023; }
+
+        /* THREE-COLUMN PAGE LAYOUT STYLING */
+        .page-layout {
+          display: grid;
+          grid-template-columns: 260px 1fr 260px;
+          gap: 20px;
+          max-width: 1500px;
+          margin: 0 auto;
+          padding: 0 20px;
+          align-items: start;
+        }
+
+        .sidebar {
+          background: #fff;
+          border-radius: 16px;
+          padding: 16px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+          position: sticky;
+          top: 60px;
+        }
+
+        .sidebar h3 {
+          font-family: 'Doto', sans-serif !important;
+          font-size: 14px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          margin-top: 0;
+          margin-bottom: 14px;
+          text-align: center;
+          color: #333;
+        }
+
+        .widget-container {
+          display: flex;
+          flex-direction: column;
+          gap: 14px;
+        }
+
+        .social-widget-card {
+          background: #fbfbfb;
+          border-radius: 12px;
+          padding: 12px;
+          border: 1px solid #eee;
+          overflow: hidden;
+          transition: border-color 0.2s ease;
+        }
+        .social-widget-card:hover {
+          border-color: #ddd;
+        }
+
+        .sidebar-input-row {
+          display: flex;
+          gap: 6px;
+          margin-bottom: 10px;
+        }
+        .sidebar-input-row input {
+          flex: 1;
+          padding: 7px 10px;
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          font-size: 11px;
+          font-family: 'Doto', sans-serif !important;
+          outline: none;
+          background: #fff;
+        }
+        .sidebar-input-row input:focus {
+          border-color: #111;
+        }
+        .sidebar-action-btn {
+          background: #111;
+          color: white;
+          border: none;
+          padding: 7px 12px;
+          border-radius: 8px;
+          font-size: 11px;
+          font-weight: 700;
+          font-family: 'Doto', sans-serif !important;
+          cursor: pointer;
+          transition: background 0.2s;
+        }
+        .sidebar-action-btn:hover {
+          background: #e60023;
+        }
+
+        /* SEPARATE PURCHASED/COLLECTED FILE BOARD STYLING (UNDER VIBE & MUSIC) */
+        .collected-section {
+            margin-top: 20px;
+        }
+        .basket-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fbfbfb;
+            border: 1px solid #eee;
+            padding: 8px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            font-family: 'Doto', sans-serif;
+            transition: all 0.2s;
+        }
+        .basket-item:hover {
+            background: #f0f0f0;
+            border-color: #ddd;
+        }
+        .basket-item.active {
+            background: #111;
+            color: #fff;
+            border-color: #111;
+        }
+        .basket-item span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .basket-delete-btn {
+            background: transparent;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            font-size: 12px;
+            padding: 0 4px;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .basket-delete-btn:hover {
+            opacity: 1;
+            color: #e60023;
+        }
+        .basket-drop-zone {
+            position: relative;
+            width: 100%;
+            min-height: 180px;
+            border: 2px dashed rgba(0, 0, 0, 0.15);
+            border-radius: 12px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.5);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        .basket-icon-bg {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            width: 60px;
+            opacity: 0.85;
+            pointer-events: none;
+        }
+        .basket-content-area {
+            width: 100%;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 220px;
+            overflow-y: auto;
+        }
+        .basket-placeholder {
+            font-size: 11px;
+            color: #777;
+            font-family: 'Doto', sans-serif;
+            text-align: center;
+            margin-top: 40px;
+        }
+        .collected-item-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fff;
+            padding: 6px 10px;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-size: 12px;
+        }
+        .collected-item-card a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            max-width: 130px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .collected-item-card a:hover {
+            text-decoration: underline;
+            color: #000;
+        }
+
+        /* IPHONE FRAME & INTERACTIVE SCREEN WIDGET WITH WALLPAPER */
+        .iphone4-frame {
+          background: #1c1c1e;
+          border-radius: 36px;
+          padding: 12px 8px;
+          box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+          width: 100%;
+          max-width: 230px;
+          margin: 0 auto;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          border: 3px solid #3a3a3c;
+        }
+        .iphone4-screen {
+          width: 100%;
+          height: 360px;
+          background-color: #000;
+          background-size: cover !important;
+          background-position: center !important;
+          background-repeat: no-repeat !important;
+          border-radius: 12px;
+          position: relative;
+          overflow: hidden;
+          cursor: pointer;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+        }
+        .iphone-overlay {
+          position: absolute;
+          top: 0; left: 0; width: 100%; height: 100%;
+          background: rgba(0, 0, 0, 0.45);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          padding: 10px;
+          z-index: 1;
+        }
+        .iphone-lock-content {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          color: #fff;
+          text-align: center;
+          user-select: none;
+          position: relative;
+          z-index: 2;
+        }
+        .iphone-lock-time {
+          font-family: 'Doto', sans-serif;
+          font-size: 2.8rem;
+          font-weight: 700;
+          line-height: 1;
+          margin-bottom: 4px;
+          letter-spacing: -1px;
+          text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+        }
+        .iphone-lock-date {
+          font-family: -apple-system, sans-serif;
+          font-size: 11px;
+          color: #eee;
+          font-weight: 600;
+          margin-bottom: 24px;
+          text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+        }
+        .iphone-lock-hint {
+          font-family: 'Doto', sans-serif;
+          font-size: 9px;
+          color: #ccc;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          animation: pulseHint 2s infinite;
+          text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        }
+        @keyframes pulseHint {
+          0%, 100% { opacity: 0.5; }
+          50% { opacity: 1; }
+        }
+        .iphone-home-button {
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          background: #2c2c2e;
+          border: 1px solid #48484a;
+          margin-top: 8px;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .iphone-home-button::after {
+          content: '';
+          width: 10px;
+          height: 10px;
+          border: 1px solid #636366;
+          border-radius: 3px;
+        }
+
+        .snapchat-card {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 12px 14px;
+          background: linear-gradient(135deg, #fffdf0 0%, #fffbd6 100%);
+          border: 1px solid #f5efb4;
+        }
+        .social-info {
+          display: flex;
+          flex-direction: column;
+        }
+        .social-title {
+          font-size: 12px;
+          font-weight: 700;
+          color: #111;
+          font-family: 'Doto', sans-serif !important;
+        }
+        .social-handle {
+          font-size: 11px;
+          color: #666;
+          font-family: 'Doto', sans-serif !important;
+        }
+        .social-link-btn {
+          background: #111;
+          color: #fff;
+          padding: 6px 12px;
+          border-radius: 20px;
+          font-size: 11px;
+          font-weight: 600;
+          text-decoration: none;
+          font-family: 'Doto', sans-serif !important;
+          transition: background 0.2s;
+        }
+        .social-link-btn:hover {
+          background: #e60023;
+        }
+
+        .disc-link-wrapper {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          background: #ffffff;
+          border: 1px solid #eee;
+          padding: 12px 14px;
+          border-radius: 12px;
+        }
+        .disc-link-btn {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 52px;
+          height: 52px;
+          background: url('/disc-removebg-preview.png') no-repeat center center;
+          background-size: contain;
+          border: none;
+          cursor: pointer;
+          transition: transform 0.25s ease, filter 0.25s ease;
+          text-decoration: none;
+          position: relative;
+          flex-shrink: 0;
+        }
+        .disc-link-btn:hover {
+          transform: rotate(45deg) scale(1.12);
+          filter: drop-shadow(0 0 10px rgba(184, 41, 255, 0.6));
+        }
+
+        /* STICKY NOTE WIDGET */
+        .sticky-note-card {
+          position: relative;
+          width: 100%;
+          min-height: 155px;
+          padding: 32px 18px 20px 42px;
+          background-size: 100% 100%;
+          background-repeat: no-repeat;
+          border: none;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-start;
+          transition: transform 0.2s ease;
+        }
+        .sticky-note-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+        }
+        .sticky-note-textarea {
+          width: 100%;
+          background: transparent;
+          border: none;
+          outline: none;
+          resize: none;
+          font-family: 'Reenie Beanie', cursive;
+          font-size: 26px;
+          font-weight: 400;
+          color: #111;
+          line-height: 1.15;
+          text-align: left;
+          min-height: 105px;
+        }
+        .note-color-picker {
+          display: flex;
+          gap: 6px;
+          align-items: center;
+          margin-bottom: 8px;
+        }
+        .color-dot {
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          border: 2px solid #fff;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+          cursor: pointer;
+          transition: transform 0.2s;
+        }
+        .color-dot:hover { transform: scale(1.2); }
+
+        @media (max-width: 1200px) {
+          .page-layout {
+            grid-template-columns: 1fr;
+          }
+          .sidebar {
+            position: static;
+          }
+        }
+
+        .site-container {
+          width: 100%;
+          max-width: 100%;
+          padding: 0;
+          margin: 0 auto;
+        }
+
+        .header-wrapper {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 8px;
+          min-height: 50px;
+        }
+        h1 {
+          font-family: 'Griffy', cursive;
+          font-size: 3rem;
+          text-align: center;
+          margin: 0;
+          color: #333;
+        }
+        .custom-board-title {
+          position: absolute;
+          right: 0;
+          font-family: 'Lavishly Yours', cursive;
+          font-size: 2.2rem;
+          color: #e60023;
+          margin: 0;
+          display: none;
+        }
+        .auth-buttons {
+          position: absolute;
+          right: 0;
+          display: flex;
+          gap: 10px;
+        }
+        .btn-login {
+          background-color: #e60023;
+          color: #ffffff;
+          padding: 8px 18px;
+          border-radius: 20px;
+          font-weight: 700;
+          font-size: 14px;
+          text-decoration: none;
+          transition: background 0.2s ease;
+        }
+        .btn-login:hover { background-color: #ad001a; }
+        .btn-signup {
+          background-color: #e9e9e9;
+          color: #111111;
+          padding: 8px 18px;
+          border-radius: 20px;
+          font-weight: 700;
+          font-size: 14px;
+          text-decoration: none;
+          transition: background 0.2s ease;
+        }
+        .btn-signup:hover { background-color: #d5d5d5; }
+        .stats-summary {
+          text-align: center;
+          font-size: 14px;
+          font-weight: 600;
+          color: #666;
+          margin-bottom: 24px;
+        }
+        .form-container, .form-container input, .form-container select, .form-container button, .auto-fill-input, .auto-fill-btn, .auto-fill-hint {
+          font-family: 'Doto', sans-serif !important;
+        }
+        .form-container {
+          width: 100%;
+          max-width: 1000px;
+          margin: 0 auto 20px auto;
+          background: white;
+          padding: 24px;
+          border-radius: 16px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+          display: flex;
+          flex-wrap: wrap;
+          gap: 12px;
+        }
+        .form-container input, .form-container select {
+          flex: 1 1 45%;
+          padding: 10px;
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          font-size: 16px;
+          outline: none;
+        }
+        .input-wrapper {
+          flex: 1 1 100%;
+          position: relative;
+          display: flex;
+          align-items: center;
+        }
+        .auto-fill-input {
+          width: 100%;
+          padding: 11px 110px 11px 12px !important;
+          border: 2px solid #6366f1 !important;
+          background-color: #f5f3ff !important;
+          border-radius: 8px;
+          font-size: 16px;
+          outline: none;
+        }
+        .auto-fill-btn {
+          position: absolute;
+          right: 6px;
+          padding: 6px 14px;
+          background-color: #6366f1;
+          color: white;
+          border: none;
+          border-radius: 6px;
+          font-size: 14px;
+          font-weight: 700;
+          cursor: pointer;
+        }
+        .auto-fill-btn:hover { background-color: #4f46e5; }
+        .auto-fill-hint {
+          display: block;
+          font-size: 14px;
+          font-weight: 700;
+          color: #4f46e5;
+          margin-top: 4px;
+          margin-left: 2px;
+        }
+        .form-container button.submit-btn {
+          flex: 1 1 100%;
+          padding: 12px;
+          background-color: #e60023;
+          color: white;
+          border: none;
+          border-radius: 8px;
+          font-size: 18px;
+          font-weight: 800;
+          cursor: pointer;
+        }
+        .form-container button.submit-btn:hover { background-color: #ad001a; }
+        .search-bar { max-width: 400px; margin: 0 auto 16px auto; }
+        .search-bar input {
+          width: 100%;
+          padding: 10px 16px;
+          border-radius: 20px;
+          border: 1px solid #ddd;
+          outline: none;
+          font-size: 14px;
+        }
+        .filters {
+          display: flex;
+          justify-content: center;
+          gap: 8px;
+          margin-bottom: 24px;
+          flex-wrap: wrap;
+        }
+        .filter-btn {
+          border: none;
+          background: #e9e9e9;
+          padding: 8px 16px;
+          border-radius: 20px;
+          font-weight: 600;
+          font-size: 13px;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+        .filter-btn.active, .filter-btn:hover { background: #111; color: #fff; }
+        .board {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+          gap: 20px;
+          width: 100%;
+        }
+        .card {
+          width: 100%;
+          border-radius: 16px;
+          overflow: hidden;
+          background: url('/star-removebg-preview.png') repeat #fff;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+          position: relative;
+          display: flex;
+          flex-direction: column;
+        }
+        .card:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+        .delete-btn {
+          position: absolute;
+          top: 10px; right: 10px;
+          background: rgba(0,0,0,0.6);
+          color: white; border: none;
+          border-radius: 50%; width: 28px; height: 28px;
+          cursor: pointer; font-weight: bold; z-index: 2;
+        }
+        .delete-btn:hover { background: #e60023; }
+        .card-badge {
+          position: absolute;
+          top: 10px; left: 10px;
+          background: rgba(255, 255, 255, 0.9);
+          padding: 4px 10px; border-radius: 12px;
+          font-size: 11px; font-weight: bold; color: #333; text-transform: uppercase;
+        }
+        .card img {
+          width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block;
+        }
+        .card-details {
+          padding: 16px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;
+          background: rgba(255, 255, 255, 0.92);
+        }
+        .card-title {
+          font-size: 15px; font-weight: 600; margin: 0 0 4px 0; color: #111; text-decoration: none; display: block;
+        }
+        .card-title:hover { text-decoration: underline; }
+        .card-brand { font-size: 13px; color: #767676; margin: 0 0 8px 0; }
+        .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+        .card-price { font-size: 15px; font-weight: 700; color: #e60023; margin: 0; }
+        .card-actions-row { display: flex; gap: 4px; align-items: center; }
+        .edit-btn { border: none; background: none; color: #666; cursor: pointer; font-size: 12px; font-weight: 600; }
+        .edit-btn:hover { color: #e60023; text-decoration: underline; }
+        .collect-btn { border: 1px solid #ccc; background: #fff; color: #333; border-radius: 6px; padding: 3px 6px; cursor: pointer; font-size: 10px; font-weight: 700; font-family: 'Doto', sans-serif; }
+        .collect-btn:hover { background: #111; color: #fff; border-color: #111; }
+    </style>
+</head>
+<body>
+
+<div class="announcement-bar">
+    <span id="announcementText">MANIFESTING, NOT OVER-CONSUMING 🍎 CURATE WITH INTENTION</span>
+</div>
+
+<!-- THREE-COLUMN WRAPPER CONTAINER -->
+<div class="page-layout">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar left-sidebar">
+        <h3>Vibe & Music</h3>
+        <div class="widget-container">
+            <div class="sidebar-input-row">
+                <input type="text" id="spotifyUrlInput" placeholder="Paste Spotify link...">
+                <button class="sidebar-action-btn" style="background: #1db954;" onclick="updateSpotifyEmbed()">Load</button>
+            </div>
+            <div class="social-widget-card" style="padding: 0; overflow: hidden; background: #000; border: none;">
+                <iframe id="spotifyIframe" src="https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M?utm_source=generator&theme=0" width="100%" height="380" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" style="display: block;"></iframe>
+            </div>
+        </div>
+
+        <!-- SEPARATE PURCHASED / COLLECTED FILES BOARD SECTION WITH NAMED BASKETS -->
+        <div class="collected-section">
+            <h3>Baskets & Collections</h3>
+            <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px;" id="basketSelectorList">
+                <!-- Dynamic basket selector list items will be injected here -->
+            </div>
+            <button class="sidebar-action-btn" onclick="createNewBasket()" style="width: 100%; margin-bottom: 12px;">+ New Basket</button>
+
+            <!-- Basket Drop Zone Container -->
+            <div id="collected-basket" class="basket-drop-zone">
+                <div style="font-size: 11px; font-weight: bold; font-family: 'Doto', sans-serif; color: #333; margin-bottom: 4px; text-align: center;" id="activeBasketTitle">Acquired & Collected</div>
+                <img src="/basket.png" alt="Collection Basket" class="basket-icon-bg">
+                <div class="basket-content-area" id="basketDropArea">
+                    <span class="basket-placeholder">Drop items here</span>
+                    <!-- Dynamic collected items will be injected here -->
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CENTER CONTENT -->
+    <div class="site-container">
+        <div class="header-wrapper">
+            <div class="profile-widget">
+                <button class="apple-btn" id="profileToggleBtn" onclick="handleAppleClick(event)" ondblclick="handleAppleDoubleClick(event)" title="Click for menu, Double-click for profile page">
+                    <img src="/cleanapple.png" alt="Profile Apple Menu">
+                </button>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <div class="user-profile-card">
+                        <img id="userAvatar" class="user-avatar" src="https://via.placeholder.com/52" alt="Avatar">
+                        <div id="userName" class="user-name">Loading...</div>
+                        <div id="userHandle" class="user-handle" style="display: none;"></div>
+                        <div id="userEmail" class="user-email"></div>
+                        <a href="/favorites.html" class="nav-link-btn" style="background: #e60023;">Favorites & Profile</a>
+                        <a href="/analytics.html" class="nav-link-btn" style="background: #4f46e5;">Mindful Analytics 📊</a>
+                        <a href="/logout" class="nav-link-btn" style="background: #111;">Logout</a>
+                    </div>
+                </div>
+            </div>
+
+            <h1>My Wishlist Board</h1>
+
+            <div id="authButtons" class="auth-buttons" style="display: none;">
+                <a href="/oauth2/authorization/google" class="btn-login">Log in</a>
+                <a href="/oauth2/authorization/google" class="btn-signup">Sign up</a>
+            </div>
+            <div id="rightBoardTitle" class="custom-board-title"></div>
+        </div>
+
+        <div class="stats-summary" id="stats">0 items • Total: $0.00</div>
+
+        <div class="form-container">
+            <div style="flex: 1 1 100%;">
+                <div class="input-wrapper">
+                    <input type="url" id="productUrl" class="auto-fill-input" placeholder="Paste Store Link (Product URL)...">
+                    <button type="button" class="auto-fill-btn" onclick="fetchMetadata()">Auto-Fill</button>
+                </div>
+                <span class="auto-fill-hint">Paste link and click "Auto-Fill" to populate fields</span>
+            </div>
+
+            <input type="text" id="name" placeholder="Item Name" required>
+            <input type="text" id="brand" placeholder="Brand">
+            <input type="number" id="price" placeholder="Price ($)" step="0.01">
+            <select id="category">
+                <option value="Fashion">Fashion</option>
+                <option value="Tech">Tech</option>
+                <option value="Home">Home</option>
+                <option value="Beauty">Beauty</option>
+                <option value="Other">Other</option>
+            </select>
+            <input type="url" id="imageUrl" placeholder="Image URL">
+
+            <button class="submit-btn" onclick="addProduct()">Add to Board</button>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" id="search" placeholder="Search items or brands..." onkeyup="filterProducts()">
+        </div>
+
+        <div class="filters">
+            <button class="filter-btn active" onclick="setCategory('All', this)">All</button>
+            <button class="filter-btn" onclick="setCategory('Fashion', this)">Fashion</button>
+            <button class="filter-btn" onclick="setCategory('Tech', this)">Tech</button>
+            <button class="filter-btn" onclick="setCategory('Home', this)">Home</button>
+            <button class="filter-btn" onclick="setCategory('Beauty', this)">Beauty</button>
+        </div>
+
+        <div class="board" id="board"></div>
+    </div>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside class="sidebar right-sidebar">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <h3 style="margin: 0;">Moodboard & Vibe</h3>
+            <a href="moodboard-vibe.html" style="font-size: 10px; background: #111; color: #fff; padding: 4px 8px; border-radius: 6px; text-decoration: none; font-family: 'Doto', sans-serif; font-weight: 700;" title="Open Curation Studio">Curate ↗</a>
+        </div>
+        <div class="widget-container">
+            <div class="social-widget-card" style="padding: 10px;">
+                <span style="font-size: 11px; font-weight: bold; text-transform: uppercase; color: #333; font-family: 'Doto', sans-serif; display: block; margin-bottom: 8px;">Recent Vibe Ideas</span>
+                <div id="sidebarVibeFeed" style="display: flex; flex-direction: column; gap: 10px; max-height: 320px; overflow-y: auto;"></div>
+            </div>
+
+            <!-- TIKTOK FINDS CARD -->
+            <div class="disc-link-wrapper">
+                <div class="social-info" style="flex: 1; min-width: 0;">
+                    <span class="social-title" id="tiktokTitleDisplay" contenteditable="true" onblur="saveTiktokConfig()" style="outline: none; border-bottom: none; cursor: text; display: block; overflow: hidden; text-overflow: ellipsis;" title="Click text to edit">TikTok Finds</span>
+                    <span class="social-handle" id="tiktokSubtitleDisplay" contenteditable="true" onblur="saveTiktokConfig()" style="color: #666; outline: none; border-bottom: none; cursor: text; display: block; overflow: hidden; text-overflow: ellipsis;" title="Click text to edit">Curated Favorites</span>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <a id="tiktokLinkBtn" href="https://www.tiktok.com/@utro02/collection/buy-7269241338216860418" target="_blank" class="disc-link-btn" title="Open Collection Disc"></a>
+                    <button onclick="editTiktokUrl()" style="background: none; border: none; font-size: 9px; color: #666; cursor: pointer; text-decoration: underline; padding: 0; margin-top: 2px;">Edit Link</button>
+                </div>
+            </div>
+
+            <!-- STICKY NOTE WIDGET -->
+            <div class="social-widget-card" style="background: #fff; padding: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 11px; font-weight: bold; text-transform: uppercase; color: #333; font-family: 'Doto', sans-serif;">Quick Note</span>
+                    <div class="note-color-picker">
+                        <div class="color-dot" style="background: #ffb74d;" onclick="setNoteColor('note1-removebg-preview.png')" title="Orange Note"></div>
+                        <div class="color-dot" style="background: #aeea00;" onclick="setNoteColor('note2-removebg-preview.png')" title="Green Note"></div>
+                        <div class="color-dot" style="background: #ff5252;" onclick="setNoteColor('note3-removebg-preview.png')" title="Red Note"></div>
+                        <div class="color-dot" style="background: #ffee58;" onclick="setNoteColor('note4-removebg-preview.png')" title="Yellow Note"></div>
+                    </div>
+                </div>
+                <div id="stickyNoteCard" class="sticky-note-card" style="background-image: url('/note1-removebg-preview.png');">
+                    <textarea id="stickyNoteText" class="sticky-note-textarea" placeholder="Type your note here..." oninput="saveStickyNote()"></textarea>
+                </div>
+            </div>
+
+            <!-- IPHONE SCREEN WIDGET WITH BUTT.PNG AS WALLPAPER TOGGLE BUTTON -->
+            <div class="social-widget-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 11px; font-weight: bold; text-transform: uppercase; color: #333; font-family: 'Doto', sans-serif;">iPhone Vibe</span>
+                    <button onclick="changeIphoneWallpaper()" style="background: none; border: none; padding: 0; cursor: pointer; display: flex; align-items: center;" title="Change Wallpaper">
+                        <img src="/butt.png" alt="Wallpaper Button" style="width: 36px; height: 36px; object-fit: contain; border-radius: 50%; transition: transform 0.2s ease, filter 0.2s ease;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                    </button>
+                </div>
+                <div class="iphone4-frame">
+                    <div class="iphone4-screen" id="iphoneScreen" onclick="toggleIphoneScreen()">
+                        <div class="iphone-overlay" id="iphoneOverlay">
+                            <div class="iphone-lock-content" id="iphoneContent">
+                                <div class="iphone-lock-time" id="iphoneClock">12:00</div>
+                                <div class="iphone-lock-date" id="iphoneDate">Monday, August 17</div>
+                                <div class="iphone-lock-hint">Tap to sleep</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="iphone-home-button" onclick="toggleIphoneScreen()"></div>
+                </div>
+            </div>
+
+            <div class="social-widget-card snapchat-card" style="background: linear-gradient(135deg, #fffdf0 0%, #fffbd6 100%); border-color: #f5efb4;">
+                <div class="social-info">
+                    <span class="social-title">Snapchat Add</span>
+                    <span class="social-handle">@your_username</span>
+                </div>
+                <a href="https://www.snapchat.com/add/your_username" target="_blank" class="social-link-btn">Add Snap ↗</a>
+            </div>
+        </div>
+    </aside>
+
+</div>
+
+<script>
+    let allProducts = [];
+    let activeCategory = 'All';
+    let isIphoneAwake = true;
+
+    // Multiple Named Baskets State
+    let baskets = JSON.parse(localStorage.getItem('user_baskets')) || [
+        {
+            id: 'basket-1',
+            name: 'Acquired & Collected',
+            items: []
+        },
+        {
+            id: 'basket-2',
+            name: 'Wishlist Grails',
+            items: []
+        }
+    ];
+    let activeBasketId = localStorage.getItem('active_basket_id') || 'basket-1';
+
+    const announcements = [
+      "MANIFESTING, NOT OVER-CONSUMING 🍎 CURATE WITH INTENTION",
+      "CHOOSE MINDFULLY, SHOP INTENTIONALLY ... QUALITY > QUANTITY",
+      "MINDFUL CART ONLY ⚝ SAVING THE GRAILS, SKIPPING THE NOISE",
+      "NO BRAINLESS ADD-TO-CARTS HERE 🧷 CURATED WITH CARE"
+    ];
+
+    let currentAnnouncementIndex = 0;
+    setInterval(() => {
+      const textElem = document.getElementById("announcementText");
+      if (textElem) {
+        textElem.classList.add("fade-out");
+        setTimeout(() => {
+          currentAnnouncementIndex = (currentAnnouncementIndex + 1) % announcements.length;
+          textElem.innerText = announcements[currentAnnouncementIndex];
+          textElem.classList.remove("fade-out");
+        }, 400);
+      }
+    }, 10000);
+
+    function updateIphoneClock() {
+      const now = new Date();
+      let hours = now.getHours();
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      hours = hours % 12 || 12;
+      document.getElementById('iphoneClock').innerText = `${hours}:${minutes}`;
+
+      const options = { weekday: 'long', month: 'long', day: 'numeric' };
+      document.getElementById('iphoneDate').innerText = now.toLocaleDateString('en-US', options);
+    }
+    setInterval(updateIphoneClock, 1000);
+    updateIphoneClock();
+
+    function toggleIphoneScreen() {
+      isIphoneAwake = !isIphoneAwake;
+      const screen = document.getElementById('iphoneScreen');
+      const overlay = document.getElementById('iphoneOverlay');
+      const savedBg = localStorage.getItem('iphoneWallpaper') || '';
+
+      if (isIphoneAwake) {
+        if(savedBg) {
+          screen.style.backgroundImage = `url('${savedBg}')`;
+          screen.style.backgroundColor = 'transparent';
+        } else {
+          screen.style.backgroundColor = '#000';
+          screen.style.backgroundImage = 'none';
+        }
+        overlay.style.display = 'flex';
+      } else {
+        screen.style.backgroundColor = '#0a0a0c';
+        screen.style.backgroundImage = 'none';
+        overlay.style.display = 'none';
+      }
+    }
+
+    function changeIphoneWallpaper() {
+      const currentBg = localStorage.getItem('iphoneWallpaper') || '';
+      const newBg = prompt("Enter Image URL for your iPhone wallpaper:", currentBg);
+      if (newBg !== null) {
+        const trimmed = newBg.trim();
+        localStorage.setItem('iphoneWallpaper', trimmed);
+        const screen = document.getElementById('iphoneScreen');
+        if (trimmed !== '') {
+          screen.style.backgroundImage = `url('${trimmed}')`;
+          screen.style.backgroundColor = 'transparent';
+        } else {
+          screen.style.backgroundImage = 'none';
+          screen.style.backgroundColor = '#000';
+        }
+      }
+    }
+
+    function loadIphoneWallpaper() {
+      const savedBg = localStorage.getItem('iphoneWallpaper');
+      const screen = document.getElementById('iphoneScreen');
+      if (savedBg && savedBg.trim() !== '') {
+        screen.style.backgroundImage = `url('${savedBg}')`;
+        screen.style.backgroundColor = 'transparent';
+      } else {
+        screen.style.backgroundImage = 'none';
+        screen.style.backgroundColor = '#000';
+      }
+    }
+
+    function handleAppleClick(e) {
+      e.stopPropagation();
+      document.getElementById('profileDropdown').classList.toggle('show');
+    }
+
+    function handleAppleDoubleClick(e) {
+      e.stopPropagation();
+      window.location.href = '/favorites.html';
+    }
+
+    document.addEventListener('click', (e) => {
+      const dropdown = document.getElementById('profileDropdown');
+      const toggleBtn = document.getElementById('profileToggleBtn');
+      if (dropdown && !dropdown.contains(e.target) && !toggleBtn.contains(e.target)) {
+        dropdown.classList.remove('show');
+      }
+    });
+
+    function loadUserProfile() {
+      const savedUsername = localStorage.getItem('wishlist_username');
+      if (savedUsername) {
+        const cleanUser = savedUsername.startsWith('@') ? savedUsername.substring(1) : savedUsername;
+        const userHandleEl = document.getElementById('userHandle');
+        if (userHandleEl) {
+          userHandleEl.innerText = '@' + cleanUser;
+          userHandleEl.style.display = 'block';
+        }
+        const rightBoardTitleEl = document.getElementById('rightBoardTitle');
+        if (rightBoardTitleEl) {
+          rightBoardTitleEl.innerText = `${cleanUser}'s wishlist`;
+          rightBoardTitleEl.style.display = 'block';
+        }
+      }
+
+      const savedName = localStorage.getItem('wishlist_user_name');
+      if (savedName) {
+        const userNameEl = document.getElementById('userName');
+        if (userNameEl) {
+          userNameEl.innerText = savedName;
+        }
+      }
+
+      const savedAvatar = localStorage.getItem('wishlist_user_avatar');
+      if (savedAvatar) {
+        const userAvatarEl = document.getElementById('userAvatar');
+        if (userAvatarEl) {
+          userAvatarEl.src = savedAvatar;
+        }
+      }
+
+      fetch('/api/user/me')
+        .then(res => { if (!res.ok) throw new Error(); return res.json(); })
+        .then(user => {
+          document.getElementById('authButtons').style.display = 'none';
+          if (user && user.isProfileComplete === false) {
+            window.location.href = '/profile.html';
+            return;
+          }
+          if (user && user.name) {
+            if (!savedName) document.getElementById('userName').innerText = user.name;
+            document.getElementById('userEmail').innerText = user.email;
+            if (user.picture && !savedAvatar) document.getElementById('userAvatar').src = user.picture;
+            if (user.username && !savedUsername) {
+              const cleanUser = user.username.startsWith('@') ? user.username.substring(1) : user.username;
+              document.getElementById('userHandle').innerText = '@' + cleanUser;
+              document.getElementById('userHandle').style.display = 'block';
+              document.getElementById('rightBoardTitle').innerText = `${cleanUser}'s wishlist`;
+              document.getElementById('rightBoardTitle').style.display = 'block';
+            }
+          }
+        })
+        .catch(() => { document.getElementById('authButtons').style.display = 'flex'; });
+    }
+
+    async function fetchMetadata() {
+      const input = document.getElementById('productUrl');
+      const url = input.value.trim();
+      const hint = document.querySelector('.auto-fill-hint');
+      if (!url) { hint.innerText = '⚠️ Please paste a valid product link first.'; return; }
+
+      try {
+        const response = await fetch('/api/products/parse-url?url=' + encodeURIComponent(url));
+        if (response.ok) {
+          const data = await response.json();
+          if (data.title) document.getElementById('name').value = data.title;
+          if (data.brand) document.getElementById('brand').value = data.brand;
+          if (data.image) document.getElementById('imageUrl').value = data.image;
+          if (data.price) document.getElementById('price').value = data.price;
+          hint.innerText = '✅ Details auto-filled successfully!';
+        }
+      } catch (err) {
+        hint.innerText = '⚠️ Couldn\'t auto-fill. Please enter manually.';
+      }
+    }
+
+    function loadProducts() {
+      fetch('/api/wishlist')
+        .then(res => res.json())
+        .then(products => {
+          allProducts = products;
+          filterProducts();
+        });
+    }
+
+    function filterProducts() {
+      const query = document.getElementById('search').value.toLowerCase();
+      const filtered = allProducts.filter(p => {
+        const matchesCategory = activeCategory === 'All' || p.category === activeCategory;
+        const matchesSearch = (p.name && p.name.toLowerCase().includes(query)) || (p.brand && p.brand.toLowerCase().includes(query));
+        return matchesCategory && matchesSearch;
+      });
+      renderProducts(filtered);
+    }
+
+    function renderProducts(products) {
+      const board = document.getElementById('board');
+      board.innerHTML = '';
+      updateStats(products);
+
+      if (!products || products.length === 0) {
+        board.innerHTML = '<p style="grid-column: 1 / -1; text-align:center; color:#777; margin-top:20px;">No wishlist items found!</p>';
+        return;
+      }
+
+      products.forEach(item => {
+        const validImage = item.imageUrl && item.imageUrl.trim() !== '' ? item.imageUrl : 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500';
+        const titleContent = item.productUrl ? `<a class="card-title" href="${item.productUrl}" target="_blank">${item.name} ↗</a>` : `<p class="card-title">${item.name}</p>`;
+
+        board.innerHTML += `
+          <div class="card">
+            <button class="delete-btn" onclick="deleteProduct(${item.id})">✕</button>
+            ${item.category ? `<span class="card-badge">${item.category}</span>` : ''}
+            <img src="${validImage}" alt="${item.name}">
+            <div class="card-details">
+              ${titleContent}
+              <p class="card-brand">${item.brand || ''}</p>
+              <div class="card-footer">
+                <p class="card-price">$${item.price || 0}</p>
+                <div class="card-actions-row">
+                  <button class="collect-btn" onclick="collectProduct(${item.id})" title="Send item to Active Basket">Collect 🍎</button>
+                  <button class="edit-btn" onclick="editPrice(${item.id}, ${item.price || 0})">Price</button>
+                  <button class="edit-btn" onclick="editItem(${item.id})">Edit</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function updateStats(products) {
+      const totalCost = products.reduce((sum, item) => sum + (item.price || 0), 0);
+      document.getElementById('stats').innerText = `${products.length} items • Total: $${totalCost.toFixed(2)}`;
+    }
+
+    function addProduct() {
+      const nameVal = document.getElementById('name').value;
+      if (!nameVal || nameVal.trim() === '') { alert('Please enter an item name'); return; }
+
+      const newProduct = {
+        name: nameVal,
+        brand: document.getElementById('brand').value,
+        price: parseFloat(document.getElementById('price').value) || 0,
+        category: document.getElementById('category').value,
+        imageUrl: document.getElementById('imageUrl').value,
+        productUrl: document.getElementById('productUrl').value
+      };
+
+      fetch('/api/wishlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newProduct)
+      })
+      .then(res => { if (!res.ok) throw new Error(); return res.json(); })
+      .then(() => {
+        document.getElementById('name').value = '';
+        document.getElementById('brand').value = '';
+        document.getElementById('price').value = '';
+        document.getElementById('imageUrl').value = '';
+        document.getElementById('productUrl').value = '';
+        loadProducts();
+      });
+    }
+
+    function deleteProduct(id) {
+      fetch('/api/wishlist/' + id, { method: 'DELETE' }).then(() => loadProducts());
+    }
+
+    function editPrice(id, currentPrice) {
+      const newPrice = prompt("Enter new price ($):", currentPrice);
+      if (newPrice !== null && !isNaN(newPrice) && newPrice.trim() !== '') {
+        const itemToUpdate = allProducts.find(p => p.id === id);
+        if (itemToUpdate) {
+          itemToUpdate.price = parseFloat(newPrice);
+          fetch('/api/wishlist', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(itemToUpdate)
+          }).then(() => loadProducts());
+        }
+      }
+    }
+
+    function editItem(id) {
+      const itemToUpdate = allProducts.find(p => p.id === id);
+      if (!itemToUpdate) return;
+
+      const newName = prompt("Edit Item Name:", itemToUpdate.name);
+      if (newName === null) return;
+
+      const newBrand = prompt("Edit Brand:", itemToUpdate.brand || "");
+      if (newBrand === null) return;
+
+      const newPrice = prompt("Edit Price ($):", itemToUpdate.price || 0);
+      if (newPrice === null) return;
+
+      const newCategory = prompt("Edit Category (Fashion, Tech, Home, Beauty, Other):", itemToUpdate.category || "Other");
+      if (newCategory === null) return;
+
+      const newImage = prompt("Edit Image URL:", itemToUpdate.imageUrl || "");
+      if (newImage === null) return;
+
+      itemToUpdate.name = newName.trim() !== "" ? newName : itemToUpdate.name;
+      itemToUpdate.brand = newBrand;
+      itemToUpdate.price = !isNaN(newPrice) && newPrice.trim() !== "" ? parseFloat(newPrice) : itemToUpdate.price;
+      itemToUpdate.category = newCategory;
+      itemToUpdate.imageUrl = newImage;
+
+      fetch('/api/wishlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(itemToUpdate)
+      }).then(() => loadProducts());
+    }
+
+    function setCategory(category, btn) {
+      activeCategory = category;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      filterProducts();
+    }
+
+    function updateSpotifyEmbed() {
+      let inputVal = document.getElementById('spotifyUrlInput').value.trim();
+      const iframe = document.getElementById('spotifyIframe');
+      if (!inputVal) return;
+
+      let spotifyId = '';
+      let contentType = 'playlist';
+      const cleanUrl = inputVal.split('?')[0];
+
+      if (cleanUrl.includes('spotify.com/')) {
+        if (cleanUrl.includes('/album/')) {
+          contentType = 'album';
+          const parts = cleanUrl.split('/album/');
+          if (parts.length > 1) spotifyId = parts[1].split('/')[0];
+        } else if (cleanUrl.includes('/playlist/')) {
+          contentType = 'playlist';
+          const parts = cleanUrl.split('/playlist/');
+          if (parts.length > 1) spotifyId = parts[1].split('/')[0];
+        }
+      } else if (inputVal.startsWith('spotify:album:')) {
+        contentType = 'album';
+        spotifyId = inputVal.split(':')[2];
+      } else if (inputVal.startsWith('spotify:playlist:')) {
+        contentType = 'playlist';
+        spotifyId = inputVal.split(':')[2];
+      } else {
+        spotifyId = inputVal.trim();
+      }
+
+      if (spotifyId) {
+        iframe.src = `https://open.spotify.com/embed/${contentType}/${spotifyId}?utm_source=generator&theme=0`;
+      } else {
+        alert('Please enter a valid Spotify playlist or album link/ID.');
+      }
+    }
+
+    function saveTiktokConfig() {
+      const title = document.getElementById('tiktokTitleDisplay').innerText;
+      const subtitle = document.getElementById('tiktokSubtitleDisplay').innerText;
+      localStorage.setItem('customTiktokTitle', title);
+      localStorage.setItem('customTiktokSubtitle', subtitle);
+    }
+
+    function editTiktokUrl() {
+      const currentUrl = document.getElementById('tiktokLinkBtn').getAttribute('href');
+      const newUrl = prompt("Enter your Collection / Link URL:", currentUrl);
+      if (newUrl !== null && newUrl.trim() !== '') {
+        document.getElementById('tiktokLinkBtn').setAttribute('href', newUrl.trim());
+        localStorage.setItem('customTiktokUrl', newUrl.trim());
+      }
+    }
+
+    function loadTiktokConfig() {
+      const savedTitle = localStorage.getItem('customTiktokTitle');
+      const savedSubtitle = localStorage.getItem('customTiktokSubtitle');
+      const savedUrl = localStorage.getItem('customTiktokUrl');
+
+      if (savedTitle) document.getElementById('tiktokTitleDisplay').innerText = savedTitle;
+      if (savedSubtitle) document.getElementById('tiktokSubtitleDisplay').innerText = savedSubtitle;
+      if (savedUrl) document.getElementById('tiktokLinkBtn').setAttribute('href', savedUrl);
+    }
+
+    function setNoteColor(imageName) {
+      const card = document.getElementById('stickyNoteCard');
+      card.style.backgroundImage = `url('/${imageName}')`;
+      localStorage.setItem('stickyNoteBg', imageName);
+    }
+
+    function saveStickyNote() {
+      const text = document.getElementById('stickyNoteText').value;
+      localStorage.setItem('stickyNoteText', text);
+    }
+
+    function loadStickyNote() {
+      const savedText = localStorage.getItem('stickyNoteText');
+      const savedBg = localStorage.getItem('stickyNoteBg');
+      if (savedText !== null) {
+        document.getElementById('stickyNoteText').value = savedText;
+      }
+      if (savedBg) {
+        document.getElementById('stickyNoteCard').style.backgroundImage = `url('/${savedBg}')`;
+      }
+    }
+
+    function loadSidebarVibeFeed() {
+        const feedContainer = document.getElementById('sidebarVibeFeed');
+        if (!feedContainer) return;
+
+        const savedBasket = JSON.parse(localStorage.getItem('curatedVibeBasket')) || [];
+        feedContainer.innerHTML = '';
+
+        if (savedBasket.length === 0) {
+            feedContainer.innerHTML = '<span style="font-size: 11px; color: #777; font-family: \'Doto\', sans-serif;">Click "Curate ↗" to add ideas!</span>';
+            return;
+        }
+
+        savedBasket.slice(0, 3).forEach(item => {
+            const thumbImg = item.img && item.img.trim() !== '' ? item.img : 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400';
+            feedContainer.innerHTML += `
+                <div style="background: #fff; border-radius: 10px; border: 1px solid #eee; overflow: hidden; display: flex; flex-direction: column;">
+                    <div style="position: relative; width: 100%; height: 120px; background: #eee;">
+                        <span style="position: absolute; top: 6px; left: 6px; font-size: 9px; font-weight: bold; background: rgba(0,0,0,0.75); color: white; padding: 2px 6px; border-radius: 4px; font-family: 'Doto', sans-serif; z-index: 2;">${item.platform}</span>
+                        <img src="${thumbImg}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                    </div>
+                    <div style="padding: 8px 10px;">
+                        <a href="${item.url || 'moodboard-vibe.html'}" target="_blank" style="font-size: 11px; color: #111; text-decoration: none; font-weight: 700; font-family: 'Doto', sans-serif; display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${item.title}">${item.title}</a>
+                        <span style="font-size: 9px; color: #666; font-family: 'Doto', sans-serif; display: block; margin-top: 2px;">by ${item.author || 'Creator'}</span>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    // --- Named Baskets & Store Link Collection Logic ---
+    function migrateLegacyBasket() {
+        const legacyItems = JSON.parse(localStorage.getItem('basket_collection_items'));
+        if (legacyItems && Array.isArray(legacyItems) && legacyItems.length > 0) {
+            const defaultBasket = baskets.find(b => b.id === 'basket-1') || baskets[0];
+            if (defaultBasket && defaultBasket.items.length === 0) {
+                defaultBasket.items = legacyItems.map((item, i) => ({
+                    id: 'legacy-' + i,
+                    name: item.name,
+                    storeLink: item.url || '#'
+                }));
+                saveBasketsToStorage();
+            }
+            localStorage.removeItem('basket_collection_items');
+        }
+    }
+
+    function collectProduct(id) {
+        const product = allProducts.find(p => p.id === id);
+        if (!product) return;
+
+        const activeBasket = baskets.find(b => b.id === activeBasketId);
+        if (!activeBasket) return;
+
+        const newItem = {
+            id: 'item-' + Date.now(),
+            name: product.name,
+            storeLink: product.productUrl || product.imageUrl || '#'
+        };
+
+        activeBasket.items.push(newItem);
+        saveBasketsToStorage();
+        renderBasketsSidebar();
+        renderActiveBasketContent();
+    }
+
+    function createNewBasket() {
+        const basketName = prompt("Enter new basket name (e.g., 'Fall Basics', 'Tabi Cravings', 'Home Decor'):");
+        if (basketName && basketName.trim() !== '') {
+            const newBasket = {
+                id: 'basket-' + Date.now(),
+                name: basketName.trim(),
+                items: []
+            };
+            baskets.push(newBasket);
+            activeBasketId = newBasket.id;
+            saveBasketsToStorage();
+            renderBasketsSidebar();
+            renderActiveBasketContent();
+        }
+    }
+
+    function deleteBasket(basketId, event) {
+        event.stopPropagation(); // Prevent selecting the basket when clicking delete
+        if (baskets.length <= 1) {
+            alert("You must keep at least one basket!");
+            return;
+        }
+
+        if (confirm("Are you sure you want to delete this basket?")) {
+            baskets = baskets.filter(b => b.id !== basketId);
+
+            // If the active basket was deleted, switch to the first available basket
+            if (activeBasketId === basketId) {
+                activeBasketId = baskets[0].id;
+            }
+
+            saveBasketsToStorage();
+            renderBasketsSidebar();
+            renderActiveBasketContent();
+        }
+    }
+
+    function saveBasketsToStorage() {
+        localStorage.setItem('user_baskets', JSON.stringify(baskets));
+        localStorage.setItem('active_basket_id', activeBasketId);
+    }
+
+    function renderBasketsSidebar() {
+        const container = document.getElementById('basketSelectorList');
+        if (!container) return;
+        container.innerHTML = '';
+
+        baskets.forEach(basket => {
+            const isActive = basket.id === activeBasketId;
+            const itemEl = document.createElement('div');
+            itemEl.className = `basket-item ${isActive ? 'active' : ''}`;
+
+            let deleteBtnHtml = '';
+            // Allow deleting any basket if there is more than 1 basket
+            if (baskets.length > 1) {
+                deleteBtnHtml = `<button class="basket-delete-btn" onclick="deleteBasket('${basket.id}', event)" title="Delete Basket">×</button>`;
+            }
+
+            itemEl.innerHTML = `<span>${basket.name}</span> <div style="display: flex; align-items: center; gap: 4px;"><span style="font-size: 10px; opacity: 0.8;">(${basket.items.length})</span>${deleteBtnHtml}</div>`;
+
+            itemEl.onclick = () => {
+                activeBasketId = basket.id;
+                localStorage.setItem('active_basket_id', activeBasketId);
+                renderBasketsSidebar();
+                renderActiveBasketContent();
+            };
+            container.appendChild(itemEl);
+        });
+
+        const activeBasket = baskets.find(b => b.id === activeBasketId);
+        const titleEl = document.getElementById('activeBasketTitle');
+        if (activeBasket && titleEl) {
+            titleEl.innerText = activeBasket.name;
+        }
+    }
+
+    function renderActiveBasketContent() {
+        const dropArea = document.getElementById('basketDropArea');
+        if (!dropArea) return;
+        dropArea.innerHTML = '';
+
+        const activeBasket = baskets.find(b => b.id === activeBasketId);
+        if (!activeBasket || !activeBasket.items || activeBasket.items.length === 0) {
+            dropArea.innerHTML = '<span class="basket-placeholder">Drop items here</span>';
+            return;
+        }
+
+        activeBasket.items.forEach((item, index) => {
+            const itemCard = document.createElement('div');
+            itemCard.className = 'collected-item-card';
+
+            const itemLink = document.createElement('a');
+            itemLink.href = item.storeLink || '#';
+            itemLink.target = '_blank';
+            itemLink.textContent = item.name || 'Collected Item';
+            itemLink.title = item.name;
+
+            const removeBtn = document.createElement('button');
+            removeBtn.textContent = '×';
+            removeBtn.style.border = 'none';
+            removeBtn.style.background = 'transparent';
+            removeBtn.style.cursor = 'pointer';
+            removeBtn.style.fontSize = '14px';
+            removeBtn.onclick = (e) => {
+                e.stopPropagation();
+                activeBasket.items.splice(index, 1);
+                saveBasketsToStorage();
+                renderBasketsSidebar();
+                renderActiveBasketContent();
+            };
+
+            itemCard.appendChild(itemLink);
+            itemCard.appendChild(removeBtn);
+            dropArea.appendChild(itemCard);
+        });
+    }
+
+    // Initialize all app features
+    migrateLegacyBasket();
+    loadUserProfile();
+    loadProducts();
+    loadSidebarVibeFeed();
+    loadTiktokConfig();
+    loadStickyNote();
+    loadIphoneWallpaper();
+    renderBasketsSidebar();
+    renderActiveBasketContent();
+</script>
+</body>
+</html>

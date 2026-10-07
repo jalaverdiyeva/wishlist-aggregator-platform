@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Vibe & Idea Baskets Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Doto:wght@400;700;800&family=Lavishly+Yours&display=swap" rel="stylesheet">
+
+    <!-- SockJS and STOMP Client CDNs for Real-Time WebSocket Communication -->
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
+    <style>
+        * { box-sizing: border-box; }
+        body {
+          font-family: 'Doto', sans-serif, -apple-system, sans-serif;
+          background-color: #fafafa;
+          margin: 0;
+          padding: 0 24px 24px 24px;
+          color: #111;
+        }
+
+        /* Slim #FFFFC5 Bar */
+        .news-ticker-bar {
+          width: 100vw;
+          position: relative;
+          left: 50%;
+          right: 50%;
+          margin-left: -50vw;
+          margin-right: -50vw;
+          background-color: #FFFFC5;
+          background-image: url('/gull.png');
+          background-size: contain;
+          background-repeat: repeat;
+          background-position: center;
+          height: 38px;
+          margin-bottom: 6px;
+        }
+
+        .header-bar {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          max-width: 1400px;
+          margin: 0 auto 12px auto;
+        }
+        .header-left {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+        }
+        h2 {
+          font-family: 'Lavishly Yours', cursive;
+          font-size: 2.8rem;
+          color: #4f46e5;
+          margin: 0;
+          line-height: 1;
+        }
+
+        /* WebSocket Connection Badge */
+        .ws-status-badge {
+          font-size: 11px;
+          font-weight: 800;
+          padding: 6px 12px;
+          border-radius: 20px;
+          background: #dc2626;
+          color: white;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+        .ws-status-badge.connected {
+          background: #16a34a;
+        }
+
+        .back-btn-wrapper {
+          background: none;
+          border: none;
+          padding: 0;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: transform 0.2s ease, filter 0.2s ease;
+          line-height: 0;
+        }
+        .back-btn-wrapper:hover {
+          transform: scale(1.05);
+          filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+        }
+        .back-btn-wrapper img {
+          width: 80px;
+          height: auto;
+          object-fit: contain;
+        }
+
+        .studio-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 16px;
+          max-width: 1400px;
+          margin: 0 auto 24px auto;
+        }
+
+        .basket-card {
+          background-image: linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)), url('/back.jpg');
+          background-size: cover;
+          background-position: center;
+          border: 1px solid #d8d8d8;
+          border-radius: 14px;
+          padding: 16px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+        }
+        .basket-title {
+          font-size: 12px;
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          color: #333;
+          margin-bottom: 4px;
+        }
+        .basket-card input[type="text"], .basket-card input[type="url"] {
+          width: 100%;
+          padding: 8px 10px;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          font-size: 12px;
+          font-family: 'Doto', sans-serif;
+          outline: none;
+          background: rgba(255, 255, 255, 0.9);
+        }
+        .file-upload-row {
+          display: flex;
+          align-items: center;
+          font-size: 11px;
+          color: #555;
+          border: 1px dashed #bbb;
+          padding: 6px;
+          border-radius: 8px;
+          background: rgba(255, 255, 255, 0.85);
+        }
+        .file-upload-row input { font-size: 10px; }
+        .add-mood-btn {
+          background: #e60023;
+          color: white;
+          border: none;
+          padding: 9px;
+          border-radius: 8px;
+          font-weight: 800;
+          font-size: 12px;
+          cursor: pointer;
+          margin-top: 4px;
+          font-family: 'Doto', sans-serif;
+        }
+        .add-mood-btn:hover { background: #ad001a; }
+
+        .canvas-section {
+          max-width: 1400px;
+          margin: 0 auto;
+          background: #fff;
+          border: 1px solid #e5e5e5;
+          border-radius: 16px;
+          padding: 24px;
+          box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+        }
+        .canvas-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 16px;
+          flex-wrap: wrap;
+          gap: 12px;
+        }
+        .canvas-filters {
+          display: flex;
+          gap: 8px;
+        }
+        .canvas-filter-btn {
+          background: #f0f0f0;
+          border: none;
+          padding: 6px 12px;
+          border-radius: 12px;
+          font-size: 11px;
+          font-weight: 700;
+          cursor: pointer;
+          font-family: 'Doto', sans-serif;
+        }
+        .canvas-filter-btn.active, .canvas-filter-btn:hover {
+          background: #111;
+          color: #fff;
+        }
+        .canvas-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+          gap: 16px;
+          min-height: 180px;
+        }
+        .canvas-item {
+          position: relative;
+          background: #fdfdfd;
+          border: 1px solid #eaeaea;
+          border-radius: 12px;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+          box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .canvas-item img {
+          width: 100%;
+          aspect-ratio: 1 / 1;
+          object-fit: cover;
+          background: #eee;
+        }
+        .canvas-item-details {
+          padding: 10px;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+        .canvas-item-title {
+          font-size: 12px;
+          font-weight: 700;
+          color: #111;
+          text-decoration: none;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .canvas-item-title:hover { text-decoration: underline; }
+        .canvas-card-actions {
+          display: flex;
+          gap: 6px;
+          margin-top: 4px;
+        }
+        .remove-canvas-btn {
+          background: #e60023;
+          color: white;
+          border: none;
+          padding: 5px 8px;
+          border-radius: 6px;
+          font-size: 10px;
+          font-weight: 700;
+          cursor: pointer;
+        }
+        .platform-tag {
+          font-size: 9px;
+          font-weight: 800;
+          background: #111;
+          color: white;
+          padding: 2px 6px;
+          border-radius: 4px;
+          width: fit-content;
+        }
+        .save-sync-bar {
+          margin-top: 20px;
+          text-align: right;
+        }
+        .save-sync-btn {
+          background: #111;
+          color: #fff;
+          border: none;
+          padding: 10px 20px;
+          border-radius: 8px;
+          font-size: 13px;
+          font-weight: 800;
+          cursor: pointer;
+          font-family: 'Doto', sans-serif;
+        }
+        .save-sync-btn:hover { background: #e60023; }
+    </style>
+</head>
+<body>
+
+<!-- SLIM #FFFFC5 BAR WITH ROSE BACKGROUND PATTERN -->
+<div class="news-ticker-bar"></div>
+
+<div class="header-bar">
+    <div class="header-left">
+        <button class="back-btn-wrapper" onclick="window.location.href='index.html'" title="Return to Wishlist">
+            <img src="/return-removebg-preview.png" alt="Return Button">
+        </button>
+        <h2>Creative Vibe & Idea Baskets Studio</h2>
+    </div>
+    <!-- Live WebSocket Connection Status Badge -->
+    <div id="wsStatusBadge" class="ws-status-badge">Disconnected</div>
+</div>
+
+<!-- 4 INPUT BASKETS -->
+<div class="studio-grid">
+    <div class="basket-card">
+        <div class="basket-title">Instagram Reel / Post</div>
+        <input type="text" id="igTitle" placeholder="Idea Title / Vibe Name">
+        <input type="url" id="igUrl" placeholder="Paste Instagram Link...">
+        <div class="file-upload-row">
+            <input type="file" id="igFile" accept="image/*">
+        </div>
+        <button class="add-mood-btn" onclick="addVibeItem('Instagram')">Add to Moodboard</button>
+    </div>
+
+    <div class="basket-card">
+        <div class="basket-title">Pinterest Board / Pin</div>
+        <input type="text" id="pinTitle" placeholder="Aesthetic / Board Title">
+        <input type="url" id="pinUrl" placeholder="Paste Pinterest Link...">
+        <div class="file-upload-row">
+            <input type="file" id="pinFile" accept="image/*">
+        </div>
+        <button class="add-mood-btn" onclick="addVibeItem('Pinterest')">Add to Moodboard</button>
+    </div>
+
+    <div class="basket-card">
+        <div class="basket-title">TikTok Trend / Find</div>
+        <input type="text" id="tkTitle" placeholder="Trend Name">
+        <input type="url" id="tkUrl" placeholder="Paste TikTok Link...">
+        <div class="file-upload-row">
+            <input type="file" id="tkFile" accept="image/*">
+        </div>
+        <button class="add-mood-btn" onclick="addVibeItem('TikTok')">Add to Moodboard</button>
+    </div>
+
+    <div class="basket-card">
+        <div class="basket-title">Magazine / Photo Mood Clip</div>
+        <input type="text" id="magTitle" placeholder="Clip / Editorial Title">
+        <input type="url" id="magUrl" placeholder="Source Reference Link (Opt)...">
+        <div class="file-upload-row">
+            <input type="file" id="magFile" accept="image/*">
+        </div>
+        <button class="add-mood-btn" onclick="addVibeItem('Magazine')">Add to Moodboard</button>
+    </div>
+</div>
+
+<!-- ACTIVE CANVAS SECTION WITH FILTERING -->
+<div class="canvas-section">
+    <div class="canvas-header">
+        <h3 id="canvasCountTitle" style="margin: 0; font-size: 14px; text-transform: uppercase;">Active Moodboard Canvas (0 items)</h3>
+        <div class="canvas-filters">
+            <button class="canvas-filter-btn active" onclick="filterCanvas('All', this)">All</button>
+            <button class="canvas-filter-btn" onclick="filterCanvas('Instagram', this)">Instagram</button>
+            <button class="canvas-filter-btn" onclick="filterCanvas('Pinterest', this)">Pinterest</button>
+            <button class="canvas-filter-btn" onclick="filterCanvas('TikTok', this)">TikTok</button>
+            <button class="canvas-filter-btn" onclick="filterCanvas('Magazine', this)">Magazine</button>
+        </div>
+    </div>
+
+    <div class="canvas-grid" id="canvasGrid">
+        <!-- Rendered dynamically -->
+    </div>
+
+    <div class="save-sync-bar">
+        <button class="save-sync-btn" onclick="saveAndSync()">Save & Sync to Main Dashboard ↗</button>
+    </div>
+</div>
+
+<script>
+    let activeCanvasItems = JSON.parse(localStorage.getItem('curatedVibeBasket')) || [];
+    let currentFilter = 'All';
+    let stompClient = null;
+
+    // Initialize WebSocket / STOMP Connection on page load
+    function connectWebSocket() {
+        const socket = new SockJS('/ws');
+        stompClient = Stomp.over(socket);
+        stompClient.debug = null; // Disable debug logging in console if desired
+
+        stompClient.connect({}, function (frame) {
+            const badge = document.getElementById('wsStatusBadge');
+            badge.innerText = "Live Real-Time Sync";
+            badge.classList.add('connected');
+
+            // Subscribe to live broadcast updates channel
+            stompClient.subscribe('/topic/moodboard-updates', function (message) {
+                const updatedItems = JSON.parse(message.body);
+                activeCanvasItems = updatedItems;
+                localStorage.setItem('curatedVibeBasket', JSON.stringify(activeCanvasItems));
+                renderCanvas();
+            });
+        }, function (error) {
+            const badge = document.getElementById('wsStatusBadge');
+            badge.innerText = "Disconnected";
+            badge.classList.remove('connected');
+            // Try reconnecting after 5 seconds
+            setTimeout(connectWebSocket, 5000);
+        });
+    }
+
+    function broadcastUpdate() {
+        if (stompClient && stompClient.connected) {
+            stompClient.send("/app/moodboard-action", {}, JSON.stringify(activeCanvasItems));
+        }
+    }
+
+    function addVibeItem(platform) {
+        let titleInput, urlInput, fileInput;
+        if (platform === 'Instagram') {
+            titleInput = document.getElementById('igTitle');
+            urlInput = document.getElementById('igUrl');
+            fileInput = document.getElementById('igFile');
+        } else if (platform === 'Pinterest') {
+            titleInput = document.getElementById('pinTitle');
+            urlInput = document.getElementById('pinUrl');
+            fileInput = document.getElementById('pinFile');
+        } else if (platform === 'TikTok') {
+            titleInput = document.getElementById('tkTitle');
+            urlInput = document.getElementById('tkUrl');
+            fileInput = document.getElementById('tkFile');
+        } else if (platform === 'Magazine') {
+            titleInput = document.getElementById('magTitle');
+            urlInput = document.getElementById('magUrl');
+            fileInput = document.getElementById('magFile');
+        }
+
+        const title = titleInput.value.trim();
+        const url = urlInput.value.trim();
+        if (!title) {
+            alert('Please enter a title or vibe name.');
+            return;
+        }
+
+        const file = fileInput.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                activeCanvasItems.push({
+                    id: Date.now(),
+                    platform: platform,
+                    title: title,
+                    url: url,
+                    img: e.target.result
+                });
+                localStorage.setItem('curatedVibeBasket', JSON.stringify(activeCanvasItems));
+                renderCanvas();
+                broadcastUpdate();
+                titleInput.value = '';
+                urlInput.value = '';
+                fileInput.value = '';
+            };
+            reader.readAsDataURL(file);
+        } else {
+            activeCanvasItems.push({
+                id: Date.now(),
+                platform: platform,
+                title: title,
+                url: url,
+                img: ''
+            });
+            localStorage.setItem('curatedVibeBasket', JSON.stringify(activeCanvasItems));
+            renderCanvas();
+            broadcastUpdate();
+            titleInput.value = '';
+            urlInput.value = '';
+            fileInput.value = '';
+        }
+    }
+
+    function renderCanvas() {
+        const grid = document.getElementById('canvasGrid');
+        const filtered = currentFilter === 'All'
+            ? activeCanvasItems
+            : activeCanvasItems.filter(item => item.platform === currentFilter);
+
+        document.getElementById('canvasCountTitle').innerText = `Active Moodboard Canvas (${filtered.length} items)`;
+
+        if (filtered.length === 0) {
+            grid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #888; font-size: 13px;">No items in this vibe basket yet.</p>';
+            return;
+        }
+
+        grid.innerHTML = filtered.map((item, index) => {
+            const imgSrc = item.img && item.img.trim() !== '' ? item.img : 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400';
+            return `
+                <div class="canvas-item">
+                    <img src="${imgSrc}" alt="${item.title}">
+                    <div class="canvas-item-details">
+                        <span class="platform-tag">${item.platform}</span>
+                        <a href="${item.url || '#'}" target="_blank" class="canvas-item-title" title="${item.title}">${item.title}</a>
+                        <div class="canvas-card-actions">
+                            <button class="remove-canvas-btn" onclick="removeItem(${item.id})">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function filterCanvas(filter, btn) {
+        currentFilter = filter;
+        document.querySelectorAll('.canvas-filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderCanvas();
+    }
+
+    function removeItem(id) {
+        activeCanvasItems = activeCanvasItems.filter(item => item.id !== id);
+        localStorage.setItem('curatedVibeBasket', JSON.stringify(activeCanvasItems));
+        renderCanvas();
+        broadcastUpdate();
+    }
+
+    function saveAndSync() {
+        localStorage.setItem('curatedVibeBasket', JSON.stringify(activeCanvasItems));
+        broadcastUpdate();
+        alert('Moodboard synced successfully to main dashboard!');
+        window.location.href = 'index.html';
+    }
+
+    // Start WebSocket connection and render initial canvas on load
+    renderCanvas();
+    connectWebSocket();
+</script>
+</body>
+</html>

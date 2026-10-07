@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Profile</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .profile-card {
+            background: #ffffff;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 360px;
+            text-align: center;
+        }
+
+        .profile-card h2 {
+            margin-bottom: 20px;
+            color: #111;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #444;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        .save-btn {
+            width: 100%;
+            background-color: #e60023;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+
+        .save-btn:hover {
+            background-color: #ad001a;
+        }
+
+        .error-msg {
+            color: #e60023;
+            font-size: 12px;
+            margin-top: 8px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="profile-card">
+    <h2>Complete Your Profile</h2>
+
+    <div class="form-group">
+        <label for="username">Set Username</label>
+        <input type="text" id="username" placeholder="e.g. jala_v">
+    </div>
+
+    <div class="form-group">
+        <label for="password">Set Password</label>
+        <input type="password" id="password" placeholder="••••••••">
+    </div>
+
+    <p id="errorMsg" class="error-msg"></p>
+
+    <button class="save-btn" onclick="saveProfileAndGoToBoard()">Back to Board</button>
+</div>
+
+<script>
+    // Check profile state when loaded
+    fetch('/api/user/me')
+        .then(res => res.json())
+        .then(user => {
+            // Send returning users straight to board if setup is already complete
+            if (user && user.isProfileComplete) {
+                window.location.href = '/index.html';
+            } else if (user && user.username) {
+                document.getElementById('username').value = user.username;
+            }
+        })
+        .catch(err => console.error('Error checking profile status:', err));
+
+    function saveProfileAndGoToBoard() {
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value.trim();
+        const errorElem = document.getElementById('errorMsg');
+
+        if (!username || !password) {
+            errorElem.innerText = 'Please enter both a username and password.';
+            errorElem.style.display = 'block';
+            return;
+        }
+
+        fetch('/api/user/profile-setup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: username, password: password })
+        })
+        .then(res => {
+            if (res.ok) {
+                // Redirect directly to the main board page
+                window.location.href = '/index.html';
+            } else {
+                return res.text().then(msg => { throw new Error(msg); });
+            }
+        })
+        .catch(err => {
+            errorElem.innerText = err.message || 'Error saving profile.';
+            errorElem.style.display = 'block';
+        });
+    }
+</script>
+
+</body>
+</html>

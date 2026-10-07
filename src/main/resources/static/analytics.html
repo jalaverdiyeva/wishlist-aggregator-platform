@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mindful Analytics - Wishlist</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Doto:wght@400;700;800&family=Griffy&family=Lavishly+Yours&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f7f7f7; margin: 0; padding: 0;
+            display: flex; flex-direction: column; min-height: 100vh;
+        }
+        .announcement-bar {
+            width: 100%; background-color: #111; color: #fff; text-align: center;
+            padding: 10px 16px; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;
+            font-family: 'Doto', sans-serif !important;
+        }
+        .navbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 40px; width: 100%; max-width: 1400px; margin: 0 auto;
+        }
+        .brand-logo {
+            font-family: 'Griffy', cursive; font-size: 2.2rem; color: #333; text-decoration: none;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .brand-logo img { height: 36px; width: 36px; }
+
+        .nav-back {
+            background: none; border: none; padding: 0; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.2s ease, filter 0.2s ease;
+            text-decoration: none;
+        }
+        .nav-back:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+        }
+        .nav-back img {
+            width: 132px; height: 132px; object-fit: contain; border-radius: 50%;
+        }
+
+        .main-container {
+            flex: 1; max-width: 1000px; width: 100%; margin: 0 auto; padding: 20px 20px 60px 20px;
+            display: flex; flex-direction: column; gap: 30px;
+        }
+        .header-title { font-family: 'Griffy', cursive; font-size: 3rem; color: #111; margin: 0; text-align: center; }
+        .header-subtitle { font-family: 'Lavishly Yours', cursive; font-size: 2.2rem; color: #4f46e5; margin: 0; text-align: center; }
+
+        .metrics-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;
+        }
+        .metric-card {
+            background: #ffffff; padding: 24px; border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06); text-align: center;
+            display: flex; flex-direction: column; gap: 8px;
+        }
+        .metric-title { font-size: 12px; font-weight: 700; color: #666; text-transform: uppercase; font-family: 'Doto', sans-serif !important; }
+        .metric-value { font-size: 2rem; font-weight: 800; color: #111; font-family: 'Doto', sans-serif !important; }
+        .metric-sub { font-size: 11px; color: #888; font-family: 'Doto', sans-serif !important; }
+
+        /* Trackers Grid */
+        .trackers-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+        }
+        @media (max-width: 768px) { .trackers-grid { grid-template-columns: 1fr; } }
+
+        .tracker-card {
+            background: #ffffff; border-radius: 16px; padding: 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 8px;
+        }
+        .tracker-header {
+            font-family: 'Doto', sans-serif !important; font-size: 13px; font-weight: 700;
+            display: flex; justify-content: space-between; color: #333; text-transform: uppercase;
+        }
+        .progress-bar-bg {
+            background: #eee; height: 10px; border-radius: 5px; overflow: hidden; margin-top: 4px;
+        }
+        .progress-bar-fill {
+            background: #4f46e5; height: 100%; width: 0%; border-radius: 5px; transition: width 0.4s ease;
+        }
+
+        .card {
+            background: #ffffff; border-radius: 20px; padding: 30px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06); display: flex; flex-direction: column; gap: 16px;
+        }
+        .card-title {
+            font-family: 'Doto', sans-serif !important; font-weight: 800; font-size: 16px; color: #111;
+            text-transform: uppercase; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; margin: 0;
+        }
+
+        /* Persona Badge Container */
+        .persona-tags {
+            display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px;
+        }
+        .persona-badge {
+            font-family: 'Doto', sans-serif !important; font-size: 11px; font-weight: 700;
+            padding: 4px 10px; border-radius: 12px; background: #e0e7ff; color: #3730a3;
+        }
+
+        /* Planning Grid for Strategic Decisions */
+        .planning-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;
+        }
+        .planning-card {
+            background: #fafafa; border: 1px solid #eee; border-radius: 14px; padding: 18px;
+            display: flex; flex-direction: column; gap: 6px;
+        }
+        .planning-card-title {
+            font-family: 'Doto', sans-serif !important; font-size: 13px; font-weight: 800; color: #111;
+            text-transform: uppercase; display: flex; align-items: center; gap: 6px;
+        }
+        .planning-card-value {
+            font-family: 'Doto', sans-serif !important; font-size: 1.3rem; font-weight: 700; color: #4f46e5;
+        }
+        .planning-card-sub {
+            font-family: 'Doto', sans-serif !important; font-size: 11px; color: #666; line-height: 1.4;
+        }
+
+        /* Category Row & Drilldown */
+        .category-row {
+            display: flex; justify-content: space-between; align-items: center;
+            font-family: 'Doto', sans-serif !important; font-size: 14px; padding: 12px 10px;
+            border-bottom: 1px solid #f4f4f4; cursor: pointer; border-radius: 8px; transition: background 0.2s;
+        }
+        .category-row:hover { background: #fafafa; }
+        .breakdown-cat { font-weight: 700; color: #333; display: flex; align-items: center; gap: 8px; }
+        .breakdown-amt { font-weight: 700; color: #e60023; }
+
+        .item-drilldown {
+            display: none; padding: 8px 16px 16px 28px; background: #fafafa; border-bottom: 1px solid #eee;
+        }
+        .item-drilldown.active { display: block; }
+        .item-detail-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 6px 0; font-family: 'Doto', sans-serif !important; font-size: 12px; color: #555;
+        }
+        .badge {
+            font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 700;
+        }
+        .badge.want { background: #fef9c3; color: #854d0e; }
+
+        /* Live Toast Banner for WebSocket notifications */
+        #liveToast {
+            position: fixed; bottom: 20px; right: 20px; background: #111; color: #fff;
+            padding: 12px 20px; border-radius: 12px; font-family: 'Doto', sans-serif; font-size: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2); display: none; z-index: 1000;
+            animation: fadeInOut 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+
+<div class="announcement-bar">MANIFESTING, NOT OVER-CONSUMING - CURATE WITH INTENTION</div>
+
+<div class="navbar">
+    <a href="/index.html" class="brand-logo"><img src="/cleanapple.png" alt="Logo"> My Wishlist</a>
+</div>
+
+<div class="main-container">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+        <div>
+            <h1 class="header-title" style="text-align: left;">Mindful Analytics</h1>
+            <h2 class="header-subtitle" style="text-align: left;">Your Demographic Curation Matrix</h2>
+        </div>
+        <a href="/index.html" class="nav-back" title="Back to Board">
+            <img src="/return-removebg-preview.png" alt="Return Button">
+        </a>
+    </div>
+
+    <!-- Metrics Top Grid -->
+    <div class="metrics-grid">
+        <div class="metric-card">
+            <span class="metric-title">Total Wishlist Value</span>
+            <span class="metric-value" id="statTotalVal">$0.00</span>
+            <span class="metric-sub">Sum of all active items</span>
+        </div>
+        <div class="metric-card">
+            <span class="metric-title">Total Saved Items</span>
+            <span class="metric-value" id="statCount">0</span>
+            <span class="metric-sub">Curated selections</span>
+        </div>
+        <div class="metric-card">
+            <span class="metric-title">Curation Health Score</span>
+            <span class="metric-value" id="statScore" style="color: #4f46e5;">100%</span>
+            <span class="metric-sub">Mindful intent index</span>
+        </div>
+    </div>
+
+    <!-- Demographic & Lifestyle Persona Matrix Summary Card -->
+    <div class="card">
+        <h3 class="card-title">Active Consumer Persona & Lifestyle Profile</h3>
+        <p style="font-family: 'Doto', sans-serif; font-size: 12px; color: #666; margin: 0;">
+            Analysis is computed dynamically based on your Personal Center demographic selections:
+        </p>
+        <div class="persona-tags" id="personaTagsContainer">
+            <span class="persona-badge">Loading persona...</span>
+        </div>
+    </div>
+
+    <!-- Extra Trackers: Dynamic Budget Ceiling & Delayed Gratification -->
+    <div class="trackers-grid">
+        <div class="tracker-card">
+            <div class="tracker-header">
+                <span>Monthly Budget Ceiling</span>
+                <span id="budgetLabel" style="color:#666;">$0 / $0</span>
+            </div>
+            <span class="metric-sub" id="budgetSub">0% of intentional spending limit used</span>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="budgetProgressBar"></div>
+            </div>
+        </div>
+        <div class="tracker-card">
+            <div class="tracker-header">
+                <span>Delayed Gratification Savings</span>
+                <span style="color: #4f46e5;">$240.00</span>
+            </div>
+            <span class="metric-sub">Saved by letting items sit on the board instead of impulse buying.</span>
+        </div>
+    </div>
+
+    <!-- Dynamic Situational Vibe Check Matrix Card -->
+    <div class="card" id="vibeCheckCard" style="display: none;">
+        <h3 class="card-title">Situational Vibe Check</h3>
+        <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+            <img id="vibeImage" src="" alt="Vibe Check" style="width: 140px; height: 140px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <div style="display: flex; flex-direction: column; gap: 6px; flex: 1;">
+                <span id="vibeTitle" style="font-family: 'Doto', sans-serif !important; font-weight: 800; font-size: 14px; color: #111; text-transform: uppercase;"></span>
+                <p id="vibeMessage" style="font-family: 'Doto', sans-serif !important; font-size: 12px; color: #666; margin: 0; line-height: 1.5;"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Strategic Future-Planning & Decision Matrix (All 5 Decisions Integrated) -->
+    <div class="card">
+        <h3 class="card-title">Strategic Future Planning & Decision Matrix</h3>
+        <p style="font-family: 'Doto', sans-serif; font-size: 12px; color: #666; margin: 0;">
+            Predictive projections powered by your income tier, lifestyle preferences, and wishlist value:
+        </p>
+        <div class="planning-grid" style="margin-top: 10px;">
+            <!-- Decision 1: Predictive Savings & Goal Forecasting -->
+            <div class="planning-card">
+                <div class="planning-card-title">1. Acquisition Horizon</div>
+                <div class="planning-card-value" id="planHorizon">0.0 Months</div>
+                <div class="planning-card-sub">Estimated time required to acquire your complete active wishlist safely at current savings rate.</div>
+            </div>
+            <!-- Decision 2: Lifecycle & Milestone Impact Modeling -->
+            <div class="planning-card">
+                <div class="planning-card-title">2. Milestone Buffer</div>
+                <div class="planning-card-value" id="planMilestone">Stable Profile</div>
+                <div class="planning-card-sub" id="planMilestoneSub">Evaluating household overhead shift based on your housing and relationship status.</div>
+            </div>
+            <!-- Decision 3: Smart Purchase Recommendations -->
+            <div class="planning-card">
+                <div class="planning-card-title">3. Impulse Risk Analysis</div>
+                <div class="planning-card-value" id="planImpulseRisk">Low Risk</div>
+                <div class="planning-card-sub" id="planImpulseSub">Ratio of wishlist total to monthly disposable income tier capacity.</div>
+            </div>
+            <!-- Decision 4: Seasonal & Trend Cost Projections -->
+            <div class="planning-card">
+                <div class="planning-card-title">4. Seasonal Spike Forecast</div>
+                <div class="planning-card-value" id="planSeasonal">$0.00 / mo</div>
+                <div class="planning-card-sub">Projected seasonal adjustment required for upcoming holiday or wardrobe updates.</div>
+            </div>
+            <!-- Decision 5: Intention ROI Index -->
+            <div class="planning-card">
+                <div class="planning-card-title">5. Intention ROI Index</div>
+                <div class="planning-card-value" id="planRoi">94% Aligned</div>
+                <div class="planning-card-sub">Alignment score of curated items against your stated personal vision and lifestyle tags.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Spending Breakdown with Drilldown -->
+    <div class="card">
+        <h3 class="card-title">Spending Breakdown by Category (Click to Expand)</h3>
+        <div id="categoryBreakdown">
+            <p style="font-family: 'Doto', sans-serif; color: #888; text-align: center;">Loading analytics data...</p>
+        </div>
+    </div>
+</div>
+
+<!-- Live Real-Time Toast Notification Banner -->
+<div id="liveToast">Live Update Received! Refreshing analytics...</div>
+
+<!-- Include SockJS and Stomp client libraries for Real-Time WebSockets -->
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+
+<script>
+    // Function to fetch and refresh all analytics metrics & charts dynamically
+    function loadAnalyticsData() {
+        const income = localStorage.getItem('demo_income');
+        let budgetCap = 1000;
+        let incomeMax = 1000;
+        if (income === 'Under $1,000') {
+            budgetCap = 800;
+            incomeMax = 800;
+        } else if (income === '$1,000 - $3,000') {
+            budgetCap = 2000;
+            incomeMax = 2000;
+        } else if (income === '$3,000 - $6,000') {
+            budgetCap = 4500;
+            incomeMax = 4500;
+        } else if (income === '$6,000+') {
+            budgetCap = 8000;
+            incomeMax = 8000;
+        }
+
+        const housing = localStorage.getItem('demo_housing');
+        const children = localStorage.getItem('demo_children');
+        const lifestyles = JSON.parse(localStorage.getItem('demo_lifestyle') || '[]');
+
+        fetch('/api/wishlist')
+            .then(res => res.json())
+            .then(products => {
+                const totalCount = products.length;
+                const totalVal = products.reduce((sum, item) => sum + (item.price || 0), 0);
+
+                document.getElementById('statCount').innerText = totalCount;
+                document.getElementById('statTotalVal').innerText = '$' + totalVal.toFixed(2);
+
+                let score = 100;
+                if (totalCount > 15) score = Math.max(40, 100 - (totalCount - 15) * 3);
+                document.getElementById('statScore').innerText = score + '%';
+
+                const budgetPercent = Math.min(100, (totalVal / budgetCap) * 100);
+                document.getElementById('budgetLabel').innerText = `$${totalVal.toFixed(0)} / $${budgetCap}`;
+                document.getElementById('budgetSub').innerText = `${budgetPercent.toFixed(0)}% of intentional spending limit used (${income ? income : 'Default Tier'})`;
+                document.getElementById('budgetProgressBar').style.width = budgetPercent + '%';
+
+                // --- Dynamic Situational Vibe Selector ---
+                const vibeCard = document.getElementById('vibeCheckCard');
+                const vibeImg = document.getElementById('vibeImage');
+                const vibeTitle = document.getElementById('vibeTitle');
+                const vibeMessage = document.getElementById('vibeMessage');
+                vibeCard.style.display = 'flex';
+
+                const rawBudgetPercent = (totalVal / budgetCap) * 100;
+                if (rawBudgetPercent > 100) {
+                    vibeImg.src = '/pik4.jpeg';
+                    vibeTitle.innerText = 'Status: Financial Clownery (Near Bankruptcy)';
+                    vibeMessage.innerText = 'You have officially exceeded your monthly ceiling. Adding more items to this cart right now is performance art. Put the card down before the bank blocks you.';
+                } else if (rawBudgetPercent > 80) {
+                    vibeImg.src = '/pik1.jpeg';
+                    vibeTitle.innerText = 'Status: Delusional Elegance (Walking the Edge)';
+                    vibeMessage.innerText = 'You are dangerously close to maxing out your limit, but at least your aesthetic is immaculate while the accounts burn.';
+                } else if (rawBudgetPercent > 40) {
+                    vibeImg.src = '/pik2.jpeg';
+                    vibeTitle.innerText = 'Status: Calculating the Damage';
+                    vibeMessage.innerText = 'Moderately balanced, though you are side-eying your own spending habits. Keep an eye on those impulse buys.';
+                } else {
+                    vibeImg.src = '/pik5.jpeg';
+                    vibeTitle.innerText = 'Status: Untouchable Curation Queen';
+                    vibeMessage.innerText = 'Your spending is under control, your health score is glowing, and financial peace has never looked so good on you.';
+                }
+
+                // Strategic Planning Calculations (5 Decisions)
+                const monthlySavingsCapacity = budgetCap * 0.25;
+                const horizonMonths = monthlySavingsCapacity > 0 ? (totalVal / monthlySavingsCapacity).toFixed(1) : '0.0';
+                document.getElementById('planHorizon').innerText = `${horizonMonths} Months`;
+
+                let milestoneText = 'Optimized';
+                let milestoneSubText = 'Current structure preserves high individual flexibility.';
+                if (housing === 'Renting / Apartment') {
+                    milestoneText = 'Renting Overhead';
+                    milestoneSubText = 'Factor in independent lease commitments before major long-term curation purchases.';
+                } else if (children === 'Has Children' || children === 'Expecting') {
+                    milestoneText = 'Family Scaling';
+                    milestoneSubText = 'Household allocations shift priority toward family-centered categories.';
+                } else if (housing === 'Living with Family') {
+                    milestoneText = 'Family Protected';
+                    milestoneSubText = 'Lower fixed housing overhead allows higher discretionary curation flexibility.';
+                }
+                document.getElementById('planMilestone').innerText = milestoneText;
+                document.getElementById('planMilestoneSub').innerText = milestoneSubText;
+
+                const riskRatio = totalVal / incomeMax;
+                let riskLabel = 'Low Risk';
+                if (riskRatio > 0.6) riskLabel = 'High Impulse Risk';
+                else if (riskRatio > 0.3) riskLabel = 'Moderate Caution';
+                document.getElementById('planImpulseRisk').innerText = riskLabel;
+
+                const seasonalSpike = totalVal * 0.15;
+                document.getElementById('planSeasonal').innerText = `$${seasonalSpike.toFixed(2)} / mo`;
+
+                let baseRoi = score;
+                if (lifestyles.includes('Minimalist Curation')) baseRoi += 4;
+                if (lifestyles.includes('Eco-Conscious / Sustainable')) baseRoi += 3;
+                const finalRoi = Math.min(100, baseRoi);
+                document.getElementById('planRoi').innerText = `${finalRoi}% Aligned`;
+
+                // Category Breakdown Rendering
+                const catMap = {};
+                const catItemsMap = {};
+                products.forEach(item => {
+                    const cat = item.category || 'Other';
+                    catMap[cat] = (catMap[cat] || 0) + (item.price || 0);
+                    if (!catItemsMap[cat]) catItemsMap[cat] = [];
+                    catItemsMap[cat].push(item);
+                });
+
+                const breakdownContainer = document.getElementById('categoryBreakdown');
+                const categories = Object.keys(catMap);
+
+                if (categories.length === 0) {
+                    breakdownContainer.innerHTML = '<p style="font-family: \'Doto\', sans-serif; color: #888; text-align: center;">No category data available yet.</p>';
+                    return;
+                }
+
+                breakdownContainer.innerHTML = categories.map((cat, idx) => {
+                    const safeId = `cat-drilldown-${idx}`;
+                    const itemsHtml = catItemsMap[cat].map(i => `
+                        <div class="item-detail-row">
+                            <span>${i.name}</span>
+                            <div><span class="badge want">Mindful Want</span> &nbsp; $${(i.price || 0).toFixed(2)}</div>
+                        </div>
+                    `).join('');
+
+                    return `
+                        <div>
+                            <div class="category-row" onclick="toggleCategory('${safeId}')">
+                                <span class="breakdown-cat">${cat}</span>
+                                <span class="breakdown-amt">$${catMap[cat].toFixed(2)}</span>
+                            </div>
+                            <div id="${safeId}" class="item-drilldown">
+                                ${itemsHtml}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            })
+            .catch(() => {
+                document.getElementById('categoryBreakdown').innerHTML = '<p style="font-family: \'Doto\', sans-serif; color: #e60023; text-align: center;">Failed to load wishlist backend data.</p>';
+            });
+    }
+
+    // Initialize WebSocket STOMP Connection for real-time updates
+    function connectWebSocket() {
+        const socket = new SockJS('/ws');
+        const stompClient = Stomp.over(socket);
+        stompClient.debug = null; // Disable noisy debug logs in console
+
+        stompClient.connect({}, function (frame) {
+            console.log('Connected to WebSocket STOMP broker: ' + frame);
+            stompClient.subscribe('/topic/wishlist-updates', function (message) {
+                console.log("Real-time update received: " + message.body);
+
+                // Show floating live toast notification
+                const toast = document.getElementById('liveToast');
+                toast.style.display = 'block';
+                setTimeout(() => { toast.style.display = 'none'; }, 3000);
+
+                // Automatically refresh analytics metrics & data instantly
+                loadAnalyticsData();
+            });
+        }, function(error) {
+            console.error('STOMP connection error, retrying in 5s...', error);
+            setTimeout(connectWebSocket, 5000);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Render Persona Badges from localStorage Demographics
+        const gender = localStorage.getItem('demo_gender');
+        const marital = localStorage.getItem('demo_marital');
+        const children = localStorage.getItem('demo_children');
+        const housing = localStorage.getItem('demo_housing');
+        const occupation = localStorage.getItem('demo_occupation');
+        const income = localStorage.getItem('demo_income');
+        const lifestyles = JSON.parse(localStorage.getItem('demo_lifestyle') || '[]');
+
+        const personaContainer = document.getElementById('personaTagsContainer');
+        const badges = [];
+        if (gender) badges.push(gender);
+        if (marital) badges.push(marital);
+        if (children) badges.push(children);
+        if (housing) badges.push(housing);
+        if (occupation) badges.push(occupation);
+        if (income) badges.push(`Income Tier: ${income}`);
+        lifestyles.forEach(l => badges.push(l));
+
+        if (badges.length === 0) {
+            personaContainer.innerHTML = '<span class="persona-badge" style="background:#fee2e2; color:#991b1b;">No demographics configured yet. Visit Personal Center to set up.</span>';
+        } else {
+            personaContainer.innerHTML = badges.map(b => `<span class="persona-badge">${b}</span>`).join('');
+        }
+
+        // Load initial analytics data
+        loadAnalyticsData();
+
+        // Establish real-time WebSocket connection
+        connectWebSocket();
+    });
+
+    function toggleCategory(id) {
+        const element = document.getElementById(id);
+        if (element.classList.contains('active')) {
+            element.classList.remove('active');
+        } else {
+            element.classList.add('active');
+        }
+    }
+</script>
+</body>
+</html>

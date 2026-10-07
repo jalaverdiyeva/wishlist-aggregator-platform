@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - Wishlist</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Doto:wght@400;700;800&family=Griffy&family=Lavishly+Yours&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0; padding: 0;
+            display: flex; flex-direction: column; min-height: 100vh;
+        }
+        .announcement-bar {
+            width: 100%; background-color: #111; color: #fff; text-align: center;
+            padding: 10px 16px; font-size: 12px; letter-spacing: 1px; text-transform: uppercase;
+            font-family: 'Doto', sans-serif !important;
+        }
+        .navbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 40px; width: 100%; max-width: 1400px; margin: 0 auto;
+        }
+        .brand-logo {
+            font-family: 'Griffy', cursive; font-size: 2.2rem; color: #333;
+            text-decoration: none; display: flex; align-items: center; gap: 8px; cursor: pointer;
+        }
+        .brand-logo img { height: 36px; width: 36px; }
+        .nav-actions { display: flex; gap: 12px; }
+        .btn-login {
+            background-color: #e60023; color: #ffffff; padding: 10px 22px;
+            border-radius: 20px; font-weight: 700; font-size: 14px; border: none; cursor: pointer;
+        }
+        .btn-signup {
+            background-color: #e9e9e9; color: #111111; padding: 10px 22px;
+            border-radius: 20px; font-weight: 700; font-size: 14px; border: none; cursor: pointer;
+        }
+        .hero-container {
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 40px 20px;
+        }
+        .hero-title { font-family: 'Griffy', cursive; font-size: 4rem; color: #111; margin: 0 0 10px 0; }
+        .hero-subtitle { font-family: 'Lavishly Yours', cursive; font-size: 2.8rem; color: #e60023; margin: 0 0 32px 0; }
+        .auth-card {
+            background: #ffffff; padding: 32px 36px; border-radius: 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08); width: 100%; max-width: 380px;
+            display: flex; flex-direction: column; gap: 12px; text-align: left;
+        }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label { font-size: 12px; font-weight: 700; color: #444; font-family: 'Doto', sans-serif !important; }
+        .form-group input {
+            padding: 10px 12px; border: 1.5px solid #bbb; border-radius: 8px; font-size: 14px;
+            font-family: 'Doto', sans-serif !important; outline: none;
+        }
+        .btn-submit {
+            width: 100%; background-color: #e60023; color: white; border: none; padding: 12px;
+            border-radius: 8px; font-family: 'Doto', sans-serif !important; font-size: 15px; font-weight: 700; cursor: pointer;
+        }
+        .divider { text-align: center; font-family: 'Doto', sans-serif !important; font-size: 12px; color: #888; margin: 6px 0; }
+        .btn-google {
+            display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
+            background-color: #111111; color: #ffffff; padding: 12px; border-radius: 8px;
+            font-family: 'Doto', sans-serif !important; font-weight: 700; font-size: 13px; text-decoration: none;
+        }
+        .btn-guest { text-align: center; color: #555; font-size: 13px; font-family: 'Doto', sans-serif !important; text-decoration: underline; margin-top: 6px; cursor: pointer; }
+        .toggle-text { font-size: 12px; color: #666; text-align: center; margin-top: 8px; }
+        .toggle-text span { color: #e60023; font-weight: bold; cursor: pointer; }
+        .error-msg { color: #e60023; font-size: 12px; display: none; margin: 0; }
+    </style>
+</head>
+<body>
+
+<div class="announcement-bar">MANIFESTING, NOT OVER-CONSUMING 🍎 CURATE WITH INTENTION</div>
+
+<div class="navbar">
+    <div class="brand-logo" ondblclick="openProfilePage()" title="Double-click to open My Info">
+        <img src="/cleanapple.png" alt="Logo"> My Wishlist
+    </div>
+    <div class="nav-actions">
+        <button class="btn-login" onclick="switchToLogin()">Log in</button>
+        <button class="btn-signup" onclick="switchToSignup()">Sign up</button>
+    </div>
+</div>
+
+<div class="hero-container">
+    <h1 class="hero-title">Create the board you love</h1>
+    <h2 class="hero-subtitle">Curate with intention</h2>
+
+    <div class="auth-card">
+        <div id="formHeader" style="font-weight: bold; font-size: 18px; margin-bottom: 8px; text-align: center;">Log in to Wishlist</div>
+        <p id="authError" class="error-msg"></p>
+        <div class="form-group" id="usernameGroup" style="display: none;">
+            <label for="usernameInput">Username</label>
+            <input type="text" id="usernameInput" placeholder="jala_v">
+        </div>
+        <div class="form-group">
+            <label for="emailInput">Username or Email</label>
+            <input type="text" id="emailInput" placeholder="name@example.com">
+        </div>
+        <div class="form-group">
+            <label for="passwordInput">Password</label>
+            <input type="password" id="passwordInput" placeholder="••••••••">
+        </div>
+        <button class="btn-submit" id="submitBtn" onclick="handleAuthSubmit()">Log In</button>
+        <div class="toggle-text" id="toggleNotice">Don't have an account? <span onclick="switchToSignup()">Sign up</span></div>
+        <div class="divider">OR</div>
+        <a href="/oauth2/authorization/google" class="btn-google">
+            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" width="18" height="18"> Continue with Google
+        </a>
+        <a href="/index.html" class="btn-guest">Explore as Guest</a>
+    </div>
+</div>
+
+<script>
+    let isSignupMode = false;
+    function openProfilePage() { window.location.href = '/favorites.html'; }
+    function switchToSignup() {
+        isSignupMode = true;
+        document.getElementById('formHeader').innerText = 'Sign Up for Wishlist';
+        document.getElementById('usernameGroup').style.display = 'flex';
+        document.getElementById('submitBtn').innerText = 'Create Account';
+        document.getElementById('toggleNotice').innerHTML = 'Already have an account? <span onclick="switchToLogin()">Log in</span>';
+    }
+    function switchToLogin() {
+        isSignupMode = false;
+        document.getElementById('formHeader').innerText = 'Log in to Wishlist';
+        document.getElementById('usernameGroup').style.display = 'none';
+        document.getElementById('submitBtn').innerText = 'Log In';
+        document.getElementById('toggleNotice').innerHTML = 'Don\'t have an account? <span onclick="switchToSignup()">Sign up</span>';
+    }
+    function handleAuthSubmit() {
+        const email = document.getElementById('emailInput').value.trim();
+        const password = document.getElementById('passwordInput').value.trim();
+        const username = document.getElementById('usernameInput').value.trim();
+        const errorElem = document.getElementById('authError');
+        if (!email || !password || (isSignupMode && !username)) {
+            errorElem.innerText = 'Please fill out all required fields.';
+            errorElem.style.display = 'block';
+            return;
+        }
+        const endpoint = isSignupMode ? '/api/auth/signup' : '/api/auth/login';
+        const payload = isSignupMode ? { username, email, password } : { usernameOrEmail: email, password };
+        fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        .then(res => {
+            if (res.ok) window.location.href = '/index.html';
+            else return res.text().then(msg => { throw new Error(msg); });
+        })
+        .catch(err => {
+            errorElem.innerText = err.message || 'Authentication failed.';
+            errorElem.style.display = 'block';
+        });
+    }
+</script>
+</body>
+</html>
